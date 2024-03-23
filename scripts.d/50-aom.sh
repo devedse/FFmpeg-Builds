@@ -14,11 +14,6 @@ ffbuild_dockerstage() {
 }
 
 ffbuild_dockerbuild() {
-    for patch in /patches/*.patch; do
-        echo "Applying $patch"
-        git am < "$patch"
-    done
-
     mkdir cmbuild && cd cmbuild
 
     # Workaround broken build system
