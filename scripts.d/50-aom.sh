@@ -10,10 +10,15 @@ ffbuild_enabled() {
 }
 
 ffbuild_dockerstage() {
-    to_df "RUN --mount=src=${SELF},dst=/stage.sh --mount=src=${SELFCACHE},dst=/cache.tar.xz run_stage /stage.sh"
+    to_df "RUN --mount=src=${SELF},dst=/stage.sh --mount=src=${SELFCACHE},dst=/cache.tar.xz --mount=src=patches/aom,dst=/patches run_stage /stage.sh"
 }
 
 ffbuild_dockerbuild() {
+    for patch in /patches/*.patch; do
+        echo "Applying $patch"
+        git am < "$patch"
+    done
+
     mkdir cmbuild && cd cmbuild
 
     # Workaround broken build system
