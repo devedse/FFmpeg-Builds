@@ -10,13 +10,11 @@ for addin in ${ADDINS[*]}; do
     source "addins/${addin}.sh"
 done
 
-TESTFILE="uidtestfile"
-rm -f "$TESTFILE"
-docker run --rm -v "$PWD:/uidtestdir" "$IMAGE" touch "/uidtestdir/$TESTFILE"
-DOCKERUID="$(stat -c "%u" "$TESTFILE")"
-rm -f "$TESTFILE"
-[[ "$DOCKERUID" != "$(id -u)" ]] && UIDARGS=( -u "$(id -u):$(id -g)" ) || UIDARGS=()
-unset TESTFILE
+if docker info -f "{{println .SecurityOptions}}" | grep rootless >/dev/null 2>&1; then
+    UIDARGS=()
+else
+    UIDARGS=( -u "$(id -u):$(id -g)" )
+fi
 
 rm -rf ffbuild
 mkdir ffbuild
@@ -49,6 +47,13 @@ EOF
 [[ -t 1 ]] && TTY_ARG="-t" || TTY_ARG=""
 
 docker run --rm -i $TTY_ARG "${UIDARGS[@]}" -v "$PWD/ffbuild":/ffbuild -v "$BUILD_SCRIPT":/build.sh "$IMAGE" bash /build.sh
+
+if [[ -n "$FFBUILD_OUTPUT_DIR" ]]; then
+    mkdir -p "$FFBUILD_OUTPUT_DIR"
+    package_variant ffbuild/prefix "$FFBUILD_OUTPUT_DIR"
+    rm -rf ffbuild
+    exit 0
+fi
 
 mkdir -p artifacts
 ARTIFACTS_PATH="$PWD/artifacts"

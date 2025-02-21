@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPT_REPO="https://gitlab.freedesktop.org/xorg/util/macros.git"
-SCRIPT_COMMIT="1031f8cc5c7a170e278372ccdf2e70151b096ef7"
+SCRIPT_COMMIT="a9d71e3fd8e6758b70be31c586921bbbcd2a8449"
 
 ffbuild_enabled() {
     [[ $TARGET != linux* ]] && return -1
@@ -9,8 +9,8 @@ ffbuild_enabled() {
 }
 
 ffbuild_dockerlayer() {
-    to_df "COPY --from=${SELFLAYER} \$FFBUILD_PREFIX/. \$FFBUILD_PREFIX"
-    to_df "COPY --from=${SELFLAYER} \$FFBUILD_PREFIX/share/aclocal/. /usr/share/aclocal"
+    to_df "COPY --link --from=${SELFLAYER} \$FFBUILD_PREFIX/. \$FFBUILD_PREFIX"
+    to_df "COPY --link --from=${SELFLAYER} \$FFBUILD_PREFIX/share/aclocal/. /usr/share/aclocal"
 }
 
 ffbuild_dockerbuild() {

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPT_REPO="https://bitbucket.org/multicoreware/x265_git.git"
-SCRIPT_COMMIT="3cf6c1e53037eb9e198860365712e1bafb22f7c6"
+SCRIPT_COMMIT="5de5f5646689983578cd1bd19c7c6faacf12e746"
 
 ffbuild_enabled() {
     [[ $VARIANT == lgpl* ]] && return -1
@@ -20,6 +20,7 @@ ffbuild_dockerbuild() {
         -DENABLE_SHARED=OFF
         -DENABLE_CLI=OFF
         -DCMAKE_ASM_NASM_FLAGS=-w-macro-params-legacy
+        -DENABLE_ALPHA=ON
     )
 
     if [[ $TARGET != *32 ]]; then
@@ -45,7 +46,7 @@ EOF
         mv ../10bit/libx265.a ../8bit/libx265_main10.a
         mv libx265.a libx265_main.a
 
-        ${FFBUILD_CROSS_PREFIX}ar -M <<EOF
+        ${AR} -M <<EOF
 CREATE libx265.a
 ADDLIB libx265_main.a
 ADDLIB libx265_main10.a
