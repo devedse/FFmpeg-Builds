@@ -1,8 +1,7 @@
 #!/bin/bash
 
-SCRIPT_REPO="https://github.com/shssoichiro/aom-av1-lavish.git"
-SCRIPT_COMMIT="4882d9ee89978afa8a9c36a7d52c1fd542301055"
-SCRIPT_BRANCH="psy-lite"
+SCRIPT_REPO="https://aomedia.googlesource.com/aom"
+SCRIPT_COMMIT="3990233fc06a35944d6d33797e63931802122a95"
 
 ffbuild_enabled() {
     [[ $TARGET == winarm64 ]] && return -1
